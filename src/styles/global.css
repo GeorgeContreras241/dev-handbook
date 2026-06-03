@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/* Asegura que Tailwind escanee las clases dentro de los .md de la colección */
+@source "../content/**/*.md";
+
+/* Dark mode manual: clase .dark en <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+}
+
+/* Shiki: forzar tema oscuro cuando .dark esté activa (sobrescribe el default por media query) */
+.dark .astro-code,
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+/* ------- Estilos de contenido Markdown (.prose) ------- */
+.prose {
+  @apply text-zinc-700 dark:text-zinc-300 leading-7;
+}
+.prose > :first-child { @apply mt-0; }
+.prose > :last-child { @apply mb-0; }
+
+.prose h2 {
+  @apply text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mt-10 mb-4 tracking-tight border-b border-zinc-200 dark:border-zinc-800 pb-2;
+}
+.prose h3 {
+  @apply text-xl font-semibold text-zinc-900 dark:text-zinc-50 mt-8 mb-3;
+}
+.prose h4 {
+  @apply text-lg font-semibold text-zinc-900 dark:text-zinc-50 mt-6 mb-2;
+}
+.prose p { @apply my-4; }
+.prose ul { @apply list-disc pl-6 my-4 space-y-1; }
+.prose ol { @apply list-decimal pl-6 my-4 space-y-1; }
+.prose li > p { @apply my-1; }
+.prose a {
+  @apply text-emerald-700 dark:text-emerald-400 underline underline-offset-2 decoration-emerald-300/60 dark:decoration-emerald-700/60 hover:decoration-emerald-500;
+}
+.prose strong { @apply font-semibold text-zinc-900 dark:text-zinc-50; }
+.prose em { @apply italic; }
+
+.prose code:not(pre code) {
+  @apply font-mono text-[0.875em] bg-zinc-100 dark:bg-zinc-900 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded border border-zinc-200/60 dark:border-zinc-800;
+}
+.prose pre {
+  @apply my-6 p-4 rounded-lg overflow-x-auto text-sm font-mono border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950;
+}
+.prose pre code {
+  @apply bg-transparent p-0 border-0 text-zinc-800 dark:text-zinc-200;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-emerald-500 pl-4 italic my-6 text-zinc-600 dark:text-zinc-400;
+}
+.prose hr { @apply my-10 border-zinc-200 dark:border-zinc-800; }
+
+.prose table { @apply w-full my-6 border-collapse text-sm; }
+.prose th, .prose td {
+  @apply border border-zinc-200 dark:border-zinc-800 px-3 py-2 text-left;
+}
+.prose th {
+  @apply bg-zinc-100 dark:bg-zinc-900 font-semibold text-zinc-900 dark:text-zinc-50;
+}
+
+/* ------- Contenedor reutilizable de demos en línea ------- */
+.demo {
+  @apply my-6 p-5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-900/30;
+}
+.demo > figcaption {
+  @apply text-[0.7rem] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-4 not-italic flex items-center gap-2;
+}
+.demo > figcaption::before {
+  content: "";
+  @apply inline-block w-1.5 h-1.5 rounded-full bg-emerald-500;
+}

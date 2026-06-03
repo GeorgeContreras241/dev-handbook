@@ -1,11 +1,51 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import DocLayout from '../layouts/DocLayout.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const notes = await getCollection('notes', ({ data }) => !data.draft);
+notes.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const dateFmt = new Intl.DateTimeFormat('es', { dateStyle: 'medium' });
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<DocLayout title="Inicio" description="Mi base de conocimiento personal">
+  <header class="mb-12">
+    <h1 class="text-4xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight mb-3">
+      MyReview
+    </h1>
+    <p class="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+      Lo que sé y lo que voy aprendiendo, escrito y explicado por mí.
+      Una referencia rápida para mi yo del futuro.
+    </p>
+  </header>
+
+  <section>
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-4">
+      Últimos apuntes
+    </h2>
+    <ul class="space-y-3">
+      {notes.map((note) => (
+        <li>
+          <a
+            href={`/${note.id}`}
+            class="block p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-emerald-400 dark:hover:border-emerald-600 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 transition-colors group"
+          >
+            <div class="flex items-baseline justify-between gap-4">
+              <h3 class="font-semibold text-zinc-900 dark:text-zinc-50 group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
+                {note.data.title}
+              </h3>
+              <time class="text-xs text-zinc-500 dark:text-zinc-500 shrink-0 font-mono">
+                {dateFmt.format(note.data.date)}
+              </time>
+            </div>
+            {note.data.description && (
+              <p class="text-sm text-zinc-600 dark:text-zinc-400 mt-1.5 leading-relaxed">
+                {note.data.description}
+              </p>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</DocLayout>

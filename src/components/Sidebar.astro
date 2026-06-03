@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+
+const notes = await getCollection('notes', ({ data }) => !data.draft);
+
+type Note = (typeof notes)[number];
+const grouped: Record<string, Note[]> = {};
+for (const note of notes) {
+  const [category] = note.id.split('/');
+  (grouped[category] ??= []).push(note);
+}
+for (const cat of Object.keys(grouped)) {
+  grouped[cat].sort((a, b) => a.data.title.localeCompare(b.data.title));
+}
+
+const categoryLabels: Record<string, string> = {
+  'html': 'HTML',
+  'css': 'CSS',
+  'javascript-typescript': 'JavaScript / TypeScript',
+  'astro': 'Astro',
+};
+
+const categoryOrder = ['html', 'css', 'javascript-typescript', 'astro'];
+const renderOrder = [
+  ...categoryOrder.filter((c) => grouped[c]?.length),
+  ...Object.keys(grouped).filter((c) => !categoryOrder.includes(c)).sort(),
+];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<aside class="w-64 shrink-0 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
+  <div class="sticky top-0 max-h-screen overflow-y-auto p-6">
+    <a href="/" class="block mb-8 group">
+      <span class="block text-lg font-bold text-zinc-900 dark:text-zinc-50 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+        MyReview
+      </span>
+      <span class="block text-xs text-zinc-500 dark:text-zinc-400">
+        Mi base de conocimiento
+      </span>
+    </a>
+
+    <nav class="space-y-6">
+      {renderOrder.map((cat) => (
+        <div>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+            {categoryLabels[cat] ?? cat}
+          </h3>
+          <ul class="space-y-0.5">
+            {grouped[cat].map((note) => {
+              const href = `/${note.id}`;
+              const isActive = currentPath === href;
+              return (
+                <li>
+                  <a
+                    href={href}
+                    class:list={[
+                      'block px-3 py-1.5 rounded-md text-sm transition-colors',
+                      isActive
+                        ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/30 dark:text-emerald-200 font-medium'
+                        : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900',
+                    ]}
+                  >
+                    {note.data.title}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  </div>
+</aside>
