@@ -87,3 +87,27 @@ body {
   content: "";
   @apply inline-block w-1.5 h-1.5 rounded-full bg-emerald-500;
 }
+
+/* ------- Estilos de scrollbar para modo oscuro ------- */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  @apply bg-zinc-900;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-zinc-700 rounded-full;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  @apply bg-zinc-600;
+}
+
+/* Firefox */
+.dark * {
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 #18181b;
+}
