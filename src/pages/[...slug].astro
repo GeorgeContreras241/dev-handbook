@@ -13,9 +13,55 @@ export async function getStaticPaths() {
 const { note } = Astro.props;
 const { Content } = await render(note);
 const dateFmt = new Intl.DateTimeFormat('es', { dateStyle: 'long' });
+
+const siteUrl = Astro.site?.href ?? 'https://devatlas.dev';
+const pageUrl = new URL(`/${note.id}`, siteUrl).href;
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: note.data.title,
+  description: note.data.description,
+  url: pageUrl,
+  datePublished: note.data.date.toISOString(),
+  inLanguage: 'es',
+  publisher: {
+    '@type': 'Organization',
+    name: 'DevAtlas',
+    url: siteUrl,
+  },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Inicio',
+      item: siteUrl,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: note.data.title,
+      item: pageUrl,
+    },
+  ],
+};
 ---
 
 <DocLayout title={note.data.title} description={note.data.description}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+  <nav class="text-sm text-zinc-500 dark:text-zinc-400 mb-6" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Inicio</a>
+    <span class="mx-1.5">/</span>
+    <span class="text-zinc-700 dark:text-zinc-200">{note.data.title}</span>
+  </nav>
+
   <article>
     <header class="mb-10 pb-6 border-b border-zinc-200 dark:border-zinc-800">
       <h1 class="text-3xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight mb-3">

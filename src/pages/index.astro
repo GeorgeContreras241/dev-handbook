@@ -6,16 +6,29 @@ const notes = await getCollection('notes', ({ data }) => !data.draft);
 notes.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 const dateFmt = new Intl.DateTimeFormat('es', { dateStyle: 'medium' });
+
+const siteUrl = Astro.site?.href ?? 'https://devatlas.dev';
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'DevAtlas',
+  url: siteUrl,
+  description: 'Tu atlas de desarrollo web. Guía de referencia para las principales tecnologías y frameworks del ecosistema frontend y backend.',
+  inLanguage: 'es',
+};
 ---
 
-<DocLayout title="Inicio" description="Mi base de conocimiento personal">
+<DocLayout title="Inicio" description="Tu atlas de desarrollo web. Guía de referencia para las principales tecnologías y frameworks del ecosistema frontend y backend.">
+  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+
   <header class="mb-12">
     <h1 class="text-4xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight mb-3">
-      MyReview
+      DevAtlas
     </h1>
     <p class="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-      Lo que sé y lo que voy aprendiendo, escrito y explicado por mí.
-      Una referencia rápida para mi yo del futuro.
+      Tu atlas de desarrollo web. Guía de referencia para las principales
+      tecnologías y frameworks del ecosistema frontend y backend.
     </p>
   </header>
 
