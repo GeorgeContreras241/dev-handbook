@@ -1,0 +1,51 @@
+export const categories = [
+  {
+    name: "HTML",
+    icon: "M4 4h16l-1.5 12H5.5L4 4zm4 12h8",
+    color: "text-orange-500",
+    bg: "bg-orange-500/10",
+    border: "border-orange-500/20",
+  },
+  {
+    name: "CSS",
+    icon: "M4 4l1.5 14h13L20 4H4zm5 11l-1-5h8l-1 5H9zm1-7h6l-1 4h-4l-.5-4z",
+    color: "text-blue-500",
+    bg: "bg-blue-500/10",
+    border: "border-blue-500/20",
+  },
+  {
+    name: "JavaScript",
+    icon: "M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm3 12l2-6 2 6h-1.5l-.5-2h-2l-.5 2H8zm7 0l1.5-6h-1.5l-1 4-1-4H9.5l2 6h1zm4 0V9h1.5v1.5H21V12h-3v1.5h-1V15z",
+    color: "text-yellow-500",
+    bg: "bg-yellow-500/10",
+    border: "border-yellow-500/20",
+  },
+  {
+    name: "React",
+    icon: "M12 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7.5-.5a12 3 0 0 1 15 0M4.5 9a12 3 0 0 1 15 0M12 2v4M4.5 15a12 3 0 0 0 15 0",
+    color: "text-cyan-500",
+    bg: "bg-cyan-500/10",
+    border: "border-cyan-500/20",
+  },
+  {
+    name: "Astro",
+    icon: "M12 2L3 19h18L12 2zm0 4l5 11H7l5-11z",
+    color: "text-purple-500",
+    bg: "bg-purple-500/10",
+    border: "border-purple-500/20",
+  },
+  {
+    name: "Express",
+    icon: "M4 4h16v12H4V4zm2 2v8h12V6H6zm3 2h6v2H9V8zm0 3h6v2H9v-2z",
+    color: "text-green-500",
+    bg: "bg-green-500/10",
+    border: "border-green-500/20",
+  },
+  {
+    name: "Web APIs",
+    icon: "M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 2c4.4 0 8 3.6 8 8s-3.6 8-8 8-8-3.6-8-8 3.6-8 8-8zm-1 4h2v5l4.3 2.5-.8 1.3L11 13V8z",
+    color: "text-emerald-500",
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/20",
+  },
+];

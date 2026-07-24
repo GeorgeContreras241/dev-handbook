@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import DocLayout from '../layouts/DocLayout.astro';
+import Welcome from '../components/Welcome.astro';
 
 const notes = await getCollection('notes', ({ data }) => !data.draft);
 notes.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -17,48 +18,74 @@ const websiteSchema = {
   description: 'Tu atlas de desarrollo web. Guía de referencia para las principales tecnologías y frameworks del ecosistema frontend y backend.',
   inLanguage: 'es',
 };
+
+type Note = (typeof notes)[number];
+const grouped: Record<string, Note[]> = {};
+for (const note of notes) {
+  const [category] = note.id.split('/');
+  (grouped[category] ??= []).push(note);
+}
+for (const cat of Object.keys(grouped)) {
+  grouped[cat].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+}
+
+const categoryLabels: Record<string, string> = {
+  'html': 'HTML',
+  'css': 'CSS',
+  'javascript-typescript': 'JavaScript / TypeScript',
+  'astro': 'Astro',
+  'express': 'Express',
+  'React': 'React',
+  'Web Apis': 'Web APIs',
+};
+
+const categoryColors: Record<string, string> = {
+  'html': 'text-orange-500',
+  'css': 'text-blue-500',
+  'javascript-typescript': 'text-yellow-500',
+  'astro': 'text-purple-500',
+  'express': 'text-green-500',
+  'React': 'text-cyan-500',
+  'Web Apis': 'text-emerald-500',
+};
 ---
 
 <DocLayout title="Inicio" description="Tu atlas de desarrollo web. Guía de referencia para las principales tecnologías y frameworks del ecosistema frontend y backend.">
   <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
 
-  <header class="mb-12">
-    <h1 class="text-4xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight mb-3">
-      DevAtlas
-    </h1>
-    <p class="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-      Tu atlas de desarrollo web. Guía de referencia para las principales
-      tecnologías y frameworks del ecosistema frontend y backend.
-    </p>
-  </header>
+  <Welcome />
 
-  <section>
-    <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-4">
-      Últimos apuntes
-    </h2>
-    <ul class="space-y-3">
-      {notes.map((note) => (
-        <li>
-          <a
-            href={`/${note.id}`}
-            class="block p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-emerald-400 dark:hover:border-emerald-600 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 transition-colors group"
-          >
-            <div class="flex items-baseline justify-between gap-4">
-              <h3 class="font-semibold text-zinc-900 dark:text-zinc-50 group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
-                {note.data.title}
-              </h3>
-              <time class="text-xs text-zinc-500 dark:text-zinc-500 shrink-0 font-mono">
+  {Object.entries(grouped).map(([category, items]) => (
+    <section class="mb-10">
+      <h2 class:list={['text-sm font-semibold uppercase tracking-wider mb-4 flex items-center gap-2', categoryColors[category] ?? 'text-zinc-500 dark:text-zinc-400']}>
+        <span class:list={['w-2 h-2 rounded-full', categoryColors[category] ? categoryColors[category].replace('text-', 'bg-') : 'bg-zinc-400']}></span>
+        {categoryLabels[category] ?? category}
+        <span class="text-xs font-normal text-zinc-400 dark:text-zinc-500 normal-case tracking-normal">({items.length})</span>
+      </h2>
+      <ul class="space-y-2">
+        {items.map((note) => (
+          <li>
+            <a
+              href={`/${note.id}`}
+              class="flex items-center justify-between gap-4 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-emerald-400 dark:hover:border-emerald-600 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 transition-all group"
+            >
+              <div class="min-w-0">
+                <h3 class="font-medium text-zinc-900 dark:text-zinc-50 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 truncate">
+                  {note.data.title}
+                </h3>
+                {note.data.description && (
+                  <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">
+                    {note.data.description}
+                  </p>
+                )}
+              </div>
+              <time class="text-xs text-zinc-400 dark:text-zinc-500 shrink-0 font-mono">
                 {dateFmt.format(note.data.date)}
               </time>
-            </div>
-            {note.data.description && (
-              <p class="text-sm text-zinc-600 dark:text-zinc-400 mt-1.5 leading-relaxed">
-                {note.data.description}
-              </p>
-            )}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </section>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
 </DocLayout>
