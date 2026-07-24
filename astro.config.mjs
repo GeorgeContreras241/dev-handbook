@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://devatlas.dev',
+  site: 'https://dev-atlascode.vercel.app',
   trailingSlash: 'never',
   integrations: [sitemap()],
   vite: {
